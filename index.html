@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exchange Now</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <h1 id="title" style="font-size:50px;">Exchange Now</h1>
+    <h2 style="color: mediumblue" style="font-size:10px;">CWNU Capstone 2023</h2>
+    <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd6lsfJ%2Fbtsfg3V9fHF%2Fkk8CaVFkhjkxjcPjIyj5XK%2Fimg.png"
+        width="300" height="300" alt="logo" id="logo-image">
+    <div class="select-container">
+        <select id="currency-select">
+            <option value="USD">미국 USD</option>
+            <option value="JPY">일본 JPY</option>
+            <option value="EUR">유로 EUR</option>
+            <option value="AUD">호주 AUD</option>
+            <option value="IDR">인도네시아 IDR</option>
+        </select>
+        <div class="radio-container">
+            <input type="radio" name="type" value="banknote" id="banknote-radio" checked>
+            <label for="banknote-radio">지폐</label>
+            <input type="radio" name="type" value="coin" id="coin-radio">
+            <label for="coin-radio">동전</label>
+        </div>
+    </div>
+</body>
+
+<body>
+    <div id="container">
+        <div id="photo-button-container">
+            <label for="imageInput">CAMERA</label>
+        </div>
+        <input type="file" id="imageInput" name="imageInput" accept="image/*" onchange="checkFileSize(this)">
+    </div>
+    <div id="container_2">
+        <button id="result-button-container" onclick="callAPI()" disabled>환전 결과</button>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <div id="result"></div>
+    </div>
+
+    <!-- 환율 api 호출 스크립트 -->
+    <script>
+        let usd_price;
+        const usd_url = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd/krw.json";
+
+        fetch(usd_url)
+            .then(response => response.json())
+            .then(data => {
+                usd_price = parseInt(data.krw)
+                console.log(usd_price);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        let jpy_price;
+        const jpy_url = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/jpy/krw.json";
+
+        fetch(jpy_url)
+            .then(response => response.json())
+            .then(data => {
+                jpy_price = parseInt(data.krw)
+                console.log(jpy_price);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        let sum = 0; // 환전 결과 총 합을 0으로 초기화
+
+        function checkFileSize(input) {
+            const file = input.files[0];
+            const fileSize = file.size;
+            const maxSize = 4.5 * 1024 * 1024; //70kb
+            if (fileSize > maxSize) {
+                alert("멀리서 찍어주세요.");
+                document.getElementById("result-button-container").disabled = true;
+            } else {
+                document.getElementById("result-button-container").disabled = false;
+            }
+        }
+
+        function callAPI() {
+            const currencySelect = document.getElementById("currency-select");
+            const selectedCurrency = currencySelect.value;
+
+            if (selectedCurrency === "USD") {
+                callUSDAPI();
+            } else if (selectedCurrency === "JPY") {
+                callJPYAPI();
+            }
+
+            // ... 다른 환율 API 호출 로직 ...
+        }
+
+
+    </script>
+
+    <script src="jpy.js"></script>
+    <script src="usd.js"></script>
+
+
+</body>
+
+</html>
